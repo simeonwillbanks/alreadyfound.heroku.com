@@ -1,4 +1,14 @@
 require 'sinatra'
+require 'haml'
+
 get '/' do
-  'Already Found - http://github.com/simeonwillbanks/AlreadyFound'
+  haml :index
+end
+
+post '/bookmarklet' do
+  name = params[:name]
+  mail = params[:mail]
+  body = params[:body]
+          
+  haml :bookmarklet
 end

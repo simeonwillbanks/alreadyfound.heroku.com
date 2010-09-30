@@ -3,7 +3,10 @@
 %html
   %head
     %title Already Found
+    %link{:rel => "stylesheet", :href => "/css/screen.css", :media => "screen, projection", :type => "text/css"}
+    /[if lt IE 8]
+      %link{:rel => "stylesheet", :href => "/css/ie.css", :media => "screen, projection", :type => "text/css"}
   %body
-    %h1 Already Found
-    #container
+    .container
+      %h1 Already Found
       = yield

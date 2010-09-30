@@ -1,3 +1,2 @@
-require 'alreadyfound'
-
+require "alreadyfound"
 run Sinatra::Application

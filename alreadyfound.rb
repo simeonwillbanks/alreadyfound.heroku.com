@@ -1,19 +1,61 @@
-require 'sinatra'
-require 'haml'
+require "sinatra"
+require "haml"
+require "rack-flash"
+require "lib/bookmarklet"
 
-get '/' do
+configure :development do |config|
+  require "sinatra/reloader"
+end
+
+configure :production do
+  not_found do
+    haml :'404'
+  end
+
+  error do
+    haml :'500'
+  end
+end
+
+enable :sessions
+use Rack::Flash
+
+helpers do
+  def href(username, deliciouswin, googlewin)
+    bm = Bookmarklet.new username, deliciouswin, googlewin
+    bm.src
+  end
+end
+
+before do
+  # Bookmarklet form validation 
+  if request.path_info == "/bookmarklet" 
+    if params[:username].empty?
+      flash[:error] = "Username is required"
+      redirect '/'    
+    end
+  end
+end
+
+get "/" do
+  @username = session["username"] 
   haml :index
 end
 
-post '/bookmarklet' do
-  if params[:new_window] == "google"
-    google_window = "_blank"
-    delicious_window = "_parent"
+post "/bookmarklet" do
+  blank = "_blank"
+  parent = "_parent"
+  
+  if params[:newwin] == "delicious"
+    deliciouswin = blank
+    googlewin = parent
   else
-    google_window = "_parent"
-    delicious_window = "_blank"
+    deliciouswin = parent 
+    googlewin = blank
   end
   
-  @href = "javascript:var%20q,d=[],g=[],s;d[%27username%27]=%27"+params[:username]+"%27;d[%27url%27]=%27http://delicious.com/search?p=%q&chk=&context=userposts%7C%u&fr=del_icio_us&lc=1%27;g[%27url%27]=%27http://www.google.com/search?q=%q%27;if(window.getSelection){s=window.getSelection();if(s.toString().length>0)q=s;}if(!q)void(q=prompt(%27Enter%20search%20term%20for%20Google%20and%20Delicious%27,%27%27));if(q){q=escape(q);window.open(d[%27url%27].replace(%27%q%27,q).replace(%27%u%27,d[%27username%27]),%27"+delicious_window+"%27);window.open(g[%27url%27].replace(%27%q%27,q),%27"+google_window+"%27);}"
+  session["username"] = params[:username]
+  
+  @href = href(params[:username], deliciouswin, googlewin)
   haml :bookmarklet
 end

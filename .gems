@@ -1,2 +1,3 @@
-haml
 sinatra
+haml
+rack-flash

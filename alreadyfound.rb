@@ -33,6 +33,7 @@ use Rack::Flash
 helpers do
   def href(username, deliciouswin, googlewin)
     bm = Bookmarklet.new username, deliciouswin, googlewin
+    bm.parse()
     bm.src
   end
 end

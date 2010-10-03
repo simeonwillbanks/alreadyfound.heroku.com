@@ -2,19 +2,14 @@ require "sinatra"
 require "haml"
 require "rack-flash"
 
-# Specs run from ./spec dir so lib path different than dev or prod
-configure :test do
-  @libpath = "../lib/"
-end
-  
+set :app_file, __FILE__
+set :root, File.dirname(__FILE__)
+
 configure :development do
-  @libpath = "lib/"
   require "sinatra/reloader"
 end
 
 configure :production do
-  @libpath = "lib/"
-  
   not_found do
     haml :'404'
   end
@@ -25,7 +20,7 @@ configure :production do
 end
 
 # Libraries
-require @libpath + "bookmarklet"
+require Sinatra::Application.root + "/lib/bookmarklet"
 
 enable :sessions
 use Rack::Flash

@@ -8,24 +8,16 @@ describe "Bookmarklet" do
     @deliciouswin = "_parent"
     @googlewin = "_blank"
     @bookmarklet = Bookmarklet.new @username, @deliciouswin, @googlewin
+    # Send a message to Bookmarklet saying set all protected methods to public
+    Bookmarklet.send(:public, *Bookmarklet.protected_instance_methods) 
   end 
   
   it "should open javascript source file" do
-    class Bookmarklet 
-      def get_source 
-        source()
-      end
-    end
-    @bookmarklet.get_source().should == @source
+    @bookmarklet.source().should == @source
   end
   
   it "should substitute javascript source with instance variables" do
-    class Bookmarklet 
-      def do_sub!(str)
-        sub!(str)
-      end
-    end
-    subbed = @bookmarklet.do_sub!(@source)
+    subbed = @bookmarklet.sub!(@source)
     subbed.should be_an_instance_of(String)
     subbed.should include("duser='" + @username)
     subbed.should include("dwin='" + @deliciouswin)
@@ -33,23 +25,13 @@ describe "Bookmarklet" do
   end
   
   it "should encode the bookmarklet source" do
-    class Bookmarklet 
-      def do_encode(str)
-        encode(str)
-      end
-    end
     url = "http://rspec.info/documentation/before_and_after.html"
-    encoded = @bookmarklet.do_encode(url)
+    encoded = @bookmarklet.encode(url)
     encoded.should == "http%3A%2F%2Frspec.info%2Fdocumentation%2Fbefore_and_after.html"
   end
   
   it "should prepend bookmarklet with javascript pseudo-scheme" do
-    class Bookmarklet 
-      def do_prepend(str)
-        prepend(str)
-      end
-    end
-    prepended = @bookmarklet.do_prepend(@source)
+    prepended = @bookmarklet.prepend(@source)
     prepended.should == "javascript:" + @source
   end
    

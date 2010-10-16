@@ -1,5 +1,3 @@
-%h2 Create Your Bookmarklet
-%h3 Set your bookmarklet preferences.
 %p 
   %strong AlreadyFound 
   is a search bookmarklet. Have you ever queried Google for something, and 
@@ -7,6 +5,7 @@
   first, use
   %strong AlreadyFound 
   to simultaneously search Google and your Delicious bookmarks!!!
+%h3 Set your bookmarklet preferences and create your bookmarklet:
 %form{ :action => "/bookmarklet", :method => "post"}
   %fieldset
     - if flash[:error]

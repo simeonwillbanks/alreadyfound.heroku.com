@@ -9,6 +9,8 @@
   %body
     .container
       %h1 Already Found
+      %a{:href => "http://github.com/simeonwillbanks/AlreadyFound"}
+        %img{:style => "position: absolute; top: 0; right: 0; border: 0;", :src => "http://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png", :alt => "Fork me on GitHub"}
       = yield
       - unless request.path_info == "/" 
         %hr/

@@ -5,9 +5,7 @@ require File.join(File.dirname(__FILE__), '..', 'alreadyfound.rb')
 
 require 'rubygems'
 require 'rack/test'
-require 'spec'
-require 'spec/autorun'
-require 'spec/interop/test'
+require 'rspec'
 
 set :run, false
 set :raise_errors, true

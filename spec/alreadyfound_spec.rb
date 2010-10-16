@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-describe "Bookmarklet" do
+describe Bookmarklet do
   
   before(:each) do
     @source = "var q,d,g,s;duser='username';dwin='_blank';gwin='_parent';durl='http://delicious.com/search?p=%q&chk=&context=userposts%7C%u&fr=del_icio_us&lc=1';gurl='http://www.google.com/search?q=%q';if(window.getSelection){s=window.getSelection();if(s.toString().length>0)q=s;}if(!q)void(q=prompt('Enter search term for Google and Delicious',''));if(q){q=escape(q);window.open(durl.replace('%q',q).replace('%u',duser),dwin);window.open(gurl.replace('%q',q),gwin);}"
@@ -19,9 +19,9 @@ describe "Bookmarklet" do
   it "should substitute javascript source with instance variables" do
     subbed = @bookmarklet.sub!(@source)
     subbed.should be_an_instance_of(String)
-    subbed.should include("duser='" + @username)
-    subbed.should include("dwin='" + @deliciouswin)
-    subbed.should include("gwin='" + @googlewin)
+    subbed.should include "duser='" + @username
+    subbed.should include "dwin='" + @deliciouswin
+    subbed.should include "gwin='" + @googlewin
   end
   
   it "should encode the bookmarklet source" do
@@ -56,13 +56,13 @@ describe "Already Found" do
   
   it "should render specific text when viewing root" do
     get '/'
-    last_response.body.should include('Already Found')
-    last_response.body.should include('Create Your Bookmarklet')
-    last_response.body.should include('Set your bookmarklet preferences.')
-    last_response.body.should include('Which search result should open in a new window?:')
-    last_response.body.should include('Delicious username:')
-    last_response.body.should include('Google')
-    last_response.body.should include('Delicious')
+    last_response.body.should include 'Already Found'
+    last_response.body.should include 'Create Your Bookmarklet'
+    last_response.body.should include 'Set your bookmarklet preferences.'
+    last_response.body.should include 'Which search result should open in a new window?:'
+    last_response.body.should include 'Delicious username:'
+    last_response.body.should include 'Google'
+    last_response.body.should include 'Delicious'
   end
 
   it "should redirect and display error when bookmarklet form submitted without delicious username" do
@@ -73,7 +73,7 @@ describe "Already Found" do
     error = last_response.headers['Set-Cookie']
     get '/', '', { "HTTP_COOKIE" => error }
     last_response.should be_ok
-    last_response.body.should include("Username is required")
+    last_response.body.should include "Username is required"
   end
   
   it "should render a bookmarklet on successful bookmarklet form submission" do
@@ -84,7 +84,7 @@ describe "Already Found" do
     last_response.should be_ok
     bm = Bookmarklet.new username, deliciouswin, googlewin
     bm.parse()
-    last_response.body.should include(bm.src)
+    last_response.body.should include bm.src
   end
   
   it "should return 404 when page cannot be found" do

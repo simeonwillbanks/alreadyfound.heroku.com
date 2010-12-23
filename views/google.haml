@@ -1,0 +1,10 @@
+%h2 Simultaneously search Google Bookmarks
+%h5 Set your bookmarklet preferences and create your bookmarklet:
+%form{ :action => "/google/bookmarklet", :method => "post"}
+  %fieldset
+    %ol
+      %li
+        %label{:for => "new_window"} Which search result should open in a new window?
+        %input{:type => "radio", :name => "newwin", :value => "google"} Google
+        %input{:type => "radio", :name => "newwin", :value => "bookmarks", :checked => "checked"} Google Bookmarks
+    %input{:type => "submit", :value => "Create"}

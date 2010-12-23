@@ -1,39 +1,38 @@
 class Bookmarklet
   TEMPLATE = File.join(File.dirname(__FILE__), '..', "public/js/bookmarklet/template.js")
-  attr_reader :src
-  
-  def initialize(username, deliciouswin, googlewin)
-    @username = username
-    @deliciouswin = deliciouswin
-    @googlewin = googlewin
+
+  def initialize(google_search, service)
+    @google_search = google_search
+    @service = service
   end
-  
-  def parse()
-    @src = source()
-    sub!(@src)
-    @src = encode(@src)
-    @src = prepend(@src)
+      
+  def source
+    js = sub(javascript)
+    js = encode(js)
+    js = prepend(js)
+    js
   end
 
   protected
 
-    def source()
-      source = ""
+    def javascript
+      str = ""
       file = File.open(TEMPLATE, "r")
       file.each do |line| 
         unless line.empty?
           line.strip!
-          source << line
+          str << line
         end
       end
       file.close
-      source  
+      str  
     end
 
-    def sub!(str)
-      str.sub!("username", @username)
-      str.sub!("dwin='_blank'", "dwin='" + @deliciouswin + "'")
-      str.sub!("gwin='_parent'", "gwin='" + @googlewin + "'")    
+    def sub(str)
+      str.sub("google_win=''", "google_win='" + @google_search.win + "'").
+          sub("service_url=''", "service_url='" + @service.url + "'").
+          sub("service_win=''", "service_win='" + @service.win + "'").
+          sub("service_name=''", "service_name='" + @service.name + "'")
     end
 
     def encode(str)

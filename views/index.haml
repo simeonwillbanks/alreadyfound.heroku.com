@@ -3,18 +3,9 @@
   Have you ever queried Google for something, and eventually found the answer 
   in your bookmarks? Instead of searching Google first, use
   %strong Already Found 
-  to simultaneously search Google and your Delicious bookmarks!!!
-%h5 Set your bookmarklet preferences and create your bookmarklet:
-%form{ :action => "/bookmarklet", :method => "post"}
-  %fieldset
-    - if flash[:error]
-      %p{:class => "error"}= flash[:error]
-    %ol
-      %li
-        %label{:for => "new_window"} Which search result should open in a new window?:
-        %input{:type => "radio", :name => "newwin", :value => "google"} Google
-        %input{:type => "radio", :name => "newwin", :value => "delicious", :checked => "checked"} Delicious
-      %li
-        %label{:for => "username"} Delicious username:
-        %input{:type => "text", :name => "username", :value => @username}
-    %input{:type => "submit", :value => "Create"}
+  to simultaneously search Google and your favorite bookmark service!!!
+%h5 Which service do you use to save bookmarks?
+%p
+  %a{:href => "/google", :title => "Simultaneously search Google Bookmarks"} Google Bookmarks
+  |
+  %a{:href => "/delicious", :title => "Simultaneously search Delicious Bookmarks"} Delicious

@@ -19,49 +19,75 @@ configure :production do
   end
 end
 
-# Libraries
-require Sinatra::Application.root + "/lib/bookmarklet"
+["bookmarklet", "googlesearch", "service"].each do |lib|   
+  require Sinatra::Application.root + "/lib/" + lib
+end
 
 enable :sessions
 use Rack::Flash
 
 helpers do
-  def href(username, deliciouswin, googlewin)
-    bm = Bookmarklet.new username, deliciouswin, googlewin
-    bm.parse()
-    bm.src
+  def href(googlewin, opts)
+    google_search = GoogleSearch.new googlewin
+    service = Object.const_get("#{opts.delete(:service)}Service").new opts
+    bm = Bookmarklet.new google_search, service
+    bm.source()
   end
 end
 
 before do
-  # Bookmarklet form validation 
-  if request.path_info == "/bookmarklet" 
+  @blank = "_blank"
+  @parent = "_parent"
+  
+  # Delicious bookmarklet form validation 
+  if request.path_info == "/delicious/bookmarklet" 
     if params[:username].empty?
       flash[:error] = "Username is required"
-      redirect '/'    
+      redirect '/delicious'    
     end
   end
 end
 
 get "/" do
-  @username = session["username"] 
   haml :index
 end
 
-post "/bookmarklet" do
-  blank = "_blank"
-  parent = "_parent"
-  
+get "/delicious" do
+  @username = session["username"] 
+  haml :delicious
+end
+
+get "/google" do
+  haml :google
+end
+
+post "/delicious/bookmarklet" do  
   if params[:newwin] == "delicious"
-    deliciouswin = blank
-    googlewin = parent
+    deliciouswin = @blank
+    googlewin = @parent
   else
-    deliciouswin = parent 
-    googlewin = blank
+    deliciouswin = @parent 
+    googlewin = @blank
   end
   
   session["username"] = params[:username]
   
-  @href = href(params[:username], deliciouswin, googlewin)
+  @href = href(googlewin, {:username => params[:username], 
+                           :win => deliciouswin,
+                           :service => "Delicious"})
+  haml :bookmarklet
+end
+
+post "/google/bookmarklet" do
+  if params[:newwin] == "bookmarks"
+    bookmarkswin = @blank
+    googlewin = @parent
+  else
+    bookmarkswin = @parent 
+    googlewin = @blank
+  end
+  
+  @href = href(googlewin, {:win => bookmarkswin,
+                           :service => "GoogleBookmarks"})
   haml :bookmarklet
 end
